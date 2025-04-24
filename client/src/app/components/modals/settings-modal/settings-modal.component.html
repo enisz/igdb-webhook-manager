@@ -1,0 +1,82 @@
+<div class="container my-3">
+	<div class="row">
+		<div class="col">
+			<h4>Settings</h4>
+			<hr>
+			<form
+				[formGroup]="settingsForm"
+				novalidate
+				class="needs-validation">
+				<div class="mb-3">
+					<label
+						for="client-id"
+						class="form-label">
+						Client ID
+					</label>
+					<input
+						type="text"
+						class="form-control"
+						id="client-id"
+						formControlName="clientId">
+				</div>
+				<div class="mb-3">
+					<label
+						for="client-secret"
+						class="form-label">
+						Client Secret
+					</label>
+					<input
+						type="text"
+						class="form-control"
+						id="client-secret"
+						formControlName="clientSecret">
+				</div>
+				<div class="mb-3 has-validation">
+					<label
+						for="access-token"
+						class="form-label">
+						Access Token
+					</label>
+					<div class="input-group has-validation">
+						<input
+							type="text"
+							class="form-control"
+							[ngClass]="{ 'is-invalid': authError && authError.length > 0, 'is-valid': authError !== null && authError.length === 0}"
+							id="access-token"
+							formControlName="accessToken">
+						<button
+							class="btn btn-primary"
+							type="button"
+							[disabled]="loading || clientId.length === 0 || clientSecret.length === 0"
+							(click)="onAuthenticate()">
+							<fa-icon
+								[icon]="loading ? icons.faSpinner : icons.faUserCheck"
+								[fixedWidth]="true"
+								[animation]="loading ? 'spin-pulse' : undefined"></fa-icon>
+						</button>
+						<div class="invalid-feedback">{{ authError }}</div>
+						<div class="valid-feedback">Access token is updated!</div>
+					</div>
+				</div>
+			</form>
+			<hr>
+			<div class="button-bar d-flex flex-row-reverse">
+				<button
+					class="btn btn-link"
+					(click)="onCancel()">
+					Cancel
+				</button>
+				<button
+					class="btn btn-danger"
+					(click)="onDelete()">
+					Delete
+				</button>
+				<button
+					class="btn btn-primary"
+					(click)="onSave()">
+					Save
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

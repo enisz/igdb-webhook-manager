@@ -1,0 +1,8 @@
+services:
+  igdb-webhook-manager:
+    build:
+      context: .
+    image: igdb-webhook-manager
+    container_name: igdb-webhook-manager
+    ports:
+      - "3000:3000"

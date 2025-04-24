@@ -1,0 +1,160 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow mb-5">
+        <div class="card-body">
+          <h4 class="card-title d-flex flex-row justify-content-between align-items-center mb-4">
+            <span class="d-inline-block" ngbTooltip="Back to Webhooks">
+              <button class="btn btn-sm btn-outline-primary" [routerLink]="['/webhooks']" [disabled]="saving">
+                <fa-icon [icon]="icons.faArrowLeft" [fixedWidth]="true" class="back-button"></fa-icon>
+              </button>
+            </span>
+            <span class="me-auto d-inline-block mt-1 ms-3">
+              Webhook #{{ webhookId }}
+            </span>
+
+            <div class="button-bar" *ngIf="!edit">
+              <span class="d-inline-block" ngbTooltip="Activate">
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="onActivate()" [disabledButton]="!webhook || (webhook && webhook.active)">
+                  <fa-icon [icon]="icons.faPlay" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+              <span class="d-inline-block" ngbTooltip="Edit Webhook">
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="onEdit()" [disabledButton]="loading">
+                  <fa-icon [icon]="icons.faPenToSquare" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+              <span class="d-inline-block" ngbTooltip="Delete Webhook">
+                <button type="button" class="btn btn-outline-danger btn-sm" [disabledButton]="loading" (click)="onDelete()">
+                  <fa-icon [icon]="icons.faTrashCan" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+            </div>
+            <div class="button-bar" *ngIf="edit">
+              <span class="d-inline-block" [ngbTooltip]="saving ? 'Saving Changes' : 'Save Changes'">
+                <button type="button" class="btn btn-outline-success btn-sm" [ngClass]="{
+                    'btn-outline-success': editForm.dirty,
+                    'btn-outline-secondary': !editForm.dirty
+                  }" [disabled]="!editForm.dirty || saving" (click)="onSave()">
+                  <fa-icon [icon]="saving ? icons.faSpinner : icons.faCheck" [fixedWidth]="true"
+                    [animation]="saving ? 'spin-pulse' : undefined">
+                    ></fa-icon>
+                </button>
+              </span>
+              <span class="d-inline-block" ngbTooltip="Cancel" (click)="onCancel()">
+                <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="saving">
+                  <fa-icon [icon]="icons.faXmark" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+            </div>
+          </h4>
+          <hr />
+          @if (loading) {
+          <div class="row">
+            @for (item of [0,1,2,3,4,5,6,7,8]; track $index) {
+            <div class="col-4 mt-4 placeholder-glow">
+              <span class="placeholder w-25"></span><br />
+              <span class="placeholder w-75 bg-secondary"></span>
+            </div>
+            }
+          </div>
+          } @if (webhook) {
+          <form [formGroup]="editForm">
+            <div class="row">
+              <div class="col-4 mt-4">
+                <label class="form-label">URL</label>
+                @if (edit) {
+                <input type="text" class="form-control" id="url" formControlName="url" />
+                } @else {
+                <div>{{ webhook.url }}</div>
+                }
+              </div>
+
+              <div class="col-4 mt-4">
+                <label class="form-label">Method</label>
+                @if (edit) {
+                <select class="form-select" id="method" formControlName="method">
+                  @for (method of getWebhookMethods(); track $index) {
+                  <option [value]="method[0]" [selected]="method[0] === webhook.sub_category">
+                    {{ method[1] }}
+                  </option>
+                  }
+                </select>
+                } @else {
+                <div>{{ getWebhookMethod(webhook.sub_category) }}</div>
+                }
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="endpoint" class="form-label">Endpoint</label>
+                @if (edit) {
+                <select class="form-select" id="endpoint" formControlName="endpoint">
+                  @for (endpoint of getWebhookEndpoints(); track $index) {
+                  <option [value]="endpoint[0]" [selected]="endpoint[0] === webhook.category">
+                    {{ endpoint[1] }}
+                  </option>
+                  }
+                </select>
+                } @else {
+                <div>{{ getWebhookEndpoint(webhook.category) }}</div>
+                }
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="secret" class="form-label">Secret</label>
+                @if (edit) {
+                <input type="text" class="form-control" id="secret" formControlName="secret" />
+                } @else {
+                <div>{{ webhook.secret }}</div>
+                }
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-4 mt-4">
+                <label for="category" class="form-label">Category</label>
+                <div>{{ webhook.category }}</div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="sub-category" class="form-label">Subcategory</label>
+                <div>{{ webhook.sub_category }}</div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="active" class="form-label">Active</label>
+                <div [ngClass]="{
+                    'text-success': webhook.active,
+                    'text-danger': !webhook.active
+                  }">
+                  {{ webhook.active }}
+                </div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="number-of-retries" class="form-label">Number of retries</label>
+                <div>{{ webhook.number_of_retries }}</div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="api-key" class="form-label">Api Key</label>
+                <div>{{ webhook.api_key }}</div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="created-at" class="form-label">Created at</label>
+                <div>{{ webhook.created_at | igdbDate }}</div>
+              </div>
+
+              <div class="col-4 mt-4">
+                <label for="updated-at" class="form-label">Updated at</label>
+                <div>{{ webhook.updated_at | igdbDate }}</div>
+              </div>
+            </div>
+          </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

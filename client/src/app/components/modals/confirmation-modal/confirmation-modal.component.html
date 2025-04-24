@@ -1,0 +1,19 @@
+@if (title) {
+<div class="modal-header" [ngClass]="headerClasses">
+  <h4 class="modal-title">{{ title }}</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
+</div>
+}
+<div class="modal-body">
+  @for (message of messages; track $index) {
+  <p class="pre-wrap">{{ message }}</p>
+  }
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn" [ngClass]="[ `btn-${okColor}` ]" (click)="onOk()">
+    {{ okText }}
+  </button>
+  <button type="button" class="btn" [ngClass]="[ `btn-${cancelColor}` ]" (click)="onCancel()">
+    {{ cancelText }}
+  </button>
+</div>

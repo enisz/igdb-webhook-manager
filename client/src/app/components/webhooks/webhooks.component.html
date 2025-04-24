@@ -1,0 +1,121 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow mb-5">
+        <div class="card-body">
+          <h4 class="card-title d-flex flex-row justify-content-between align-items-center mb-4">
+            Webhooks
+
+            <div class="button-bar">
+              <span class="d-inline-block" ngbTooltip="Add Webhook">
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="onAddWebhook()"
+                  [disabledButton]="loading || !isAccessTokenSet()">
+                  <fa-icon [icon]="icons.faPlus" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+
+              <span class="d-inline-block" ngbTooltip="Refresh">
+                <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="!isAccessTokenSet()"
+                  [disabledButton]="loading || !isAccessTokenSet()" (click)="onRefresh()">
+                  <fa-icon [icon]="icons.faArrowsRotate" [fixedWidth]="true"
+                    [animation]="loading ? 'spin' : undefined"></fa-icon>
+                </button>
+              </span>
+              <span class="d-inline-block">
+                <button type="button" class="btn btn-outline-primary btn-sm" ngbTooltip="Settings"
+                  [disabledButton]="loading" (click)="onSettings()">
+                  <fa-icon [icon]="icons.faGear" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+              <span class="d-inline-block" ngbTooltip="Delete Webhooks">
+                <button type="button" class="btn btn-sm"
+                  [ngClass]="{ 'btn-outline-danger': getSelectedWebhooks().length > 0, 'btn-outline-secondary': getSelectedWebhooks().length === 0}"
+                  (click)="onDeleteSelected()"
+                  [disabledButton]="getSelectedWebhooks().length === 0 || loading || deleting">
+                  <fa-icon [icon]="icons.faTrashCan" [fixedWidth]="true"></fa-icon>
+                </button>
+              </span>
+            </div>
+          </h4>
+          <table class="table table-striped table-hover mb-0">
+            <thead>
+              <tr>
+                <th>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="toggle-all" (change)="onToggleAll($event)"
+                      #toggleAll />
+                  </div>
+                </th>
+                <th>ID</th>
+                <th>URL</th>
+                <th>Number of Retries</th>
+                <th>Active</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              @if (loading) {
+              <tr>
+                <td class="placeholder-glow">&nbsp;</td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+                <td class="placeholder-glow">
+                  <span class="placeholder w-75"></span>
+                </td>
+              </tr>
+              } @else { @if (isAccessTokenSet()) { @for (webhook of webhooks;
+              track $index) {
+              <tr [ngClass]="{
+                    'table-danger': !webhook.active,
+                    'table-warning':
+                      webhook.number_of_retries >= 3 && webhook.active
+                  }">
+                <td>
+                  <div class="form-check">
+                    <input class="form-check-input webhook-checkbox" type="checkbox" [value]="webhook.id"
+                      (change)="onCheckboxChange($event)" [id]="'webhook-' + webhook.id" [checked]="webhook.selected" />
+                  </div>
+                </td>
+                <td>
+                  <a [routerLink]="['/webhook', webhook.id]">{{
+                    webhook.id
+                    }}</a>
+                </td>
+                <td>{{ webhook.url }}</td>
+                <td>{{ webhook.number_of_retries }}</td>
+                <td>{{ webhook.active }}</td>
+                <td>{{ webhook.created_at | igdbDate }}</td>
+                <td>{{ webhook.updated_at | igdbDate }}</td>
+              </tr>
+              } @empty {
+              <tr>
+                <td [colSpan]="7" class="text-center">The list is empty</td>
+              </tr>
+              } } @else {
+              <tr>
+                <td [colSpan]="7" class="text-center">
+                  The access token is missing! Open settings to configure!
+                </td>
+              </tr>
+              } }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

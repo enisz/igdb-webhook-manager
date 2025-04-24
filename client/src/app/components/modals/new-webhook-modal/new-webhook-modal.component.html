@@ -1,0 +1,44 @@
+    <div class="modal-header bg-success text-white">
+      <h4 class="modal-title">Create New Webhook</h4>
+      <button type="button" class="btn-close" (click)="onCancel()"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="webhookForm"y0>
+            <div class="mb-3">
+                <label for="url" class="form-label">URL:</label>
+                <input type="text" class="form-control" id="url" name="url" formControlName="url" />
+            </div>
+            <div class="mb-3">
+                <label for="endpoint" class="mb-2">Endpoint:</label>
+                <select class="form-select" id="endpoint" formControlName="endpoint">
+                    @for (endpoint of getWebhookEndpoints(); track $index) {
+                        <option [value]="endpoint[0]" [selected]="$index == 0">
+                            {{ endpoint[1] }}
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="method" class="mb-2">Method:</label>
+                <select class="form-select" id="method" formControlName="method">
+                    @for (method of getWebhookMethods(); track $index) {
+                        <option [value]="method[0]" [selected]="$index == 0">
+                            {{ method[1] }}
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="secret" class="form-label">Secret:</label>
+                <input type="text" class="form-control" id="secret" name="secret" formControlName="secret" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)="onOk()" [disabled]="!webhookForm.valid || saving">
+        Create
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
