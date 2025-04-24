@@ -1,5 +1,7 @@
 # IGDB Webhook Manager
 
+Dockerized application to manage webhooks.
+
 <!-- toc -->
 
 - [Developer environment](#developer-environment)
@@ -10,8 +12,6 @@
     + [Starting the container](#starting-the-container)
 
 <!-- tocstop -->
-
-Dockerized application to manage webhooks.
 
 ## Developer environment
 
